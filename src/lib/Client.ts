@@ -5,6 +5,7 @@ import {
 import SlashCommandStore from './structures/SlashCommandStore';
 import SchedulerStore from './structures/SchedulerStore';
 import UserInteraction from '@/types/UserInteraction';
+import { connect } from 'mongoose';
 
 export default class Client extends SapphireClient {
   constructor(options: Config) {
@@ -12,6 +13,17 @@ export default class Client extends SapphireClient {
 
     container.stores.register(new SlashCommandStore());
     container.stores.register(new SchedulerStore());
+  }
+
+  async init() {
+    await connect(process.env.MONGO_URI as string)
+      .then(() => container.logger.info('Connected to MongoDB'));
+  }
+
+  async login(token?: string | undefined): Promise<string> {
+    await this.init();
+
+    return super.login(token);
   }
 }
 

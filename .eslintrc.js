@@ -24,7 +24,9 @@ module.exports = {
     'object-curly-spacing': 'error',
     'class-methods-use-this': 'off',
     'linebreak-style': ['error', 'unix'],
+    'no-shadow': 'off',
     '@typescript-eslint/semi': ['error'],
+    '@typescript-eslint/no-shadow': ['error'],
     '@typescript-eslint/quotes': ['error', 'single'],
     '@typescript-eslint/member-delimiter-style': 'error',
     '@typescript-eslint/explicit-module-boundary-types': 'off'

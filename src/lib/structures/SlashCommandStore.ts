@@ -16,10 +16,13 @@ export default class SlashCommandStore extends Store<SlashCommand> {
     const guilds = await client?.guilds?.fetch();
     // eslint-disable-next-line no-restricted-syntax
     for (const [id] of guilds) {
-      // eslint-disable-next-line no-await-in-loop
-      const guild = await client?.guilds?.fetch(id);
-      // eslint-disable-next-line no-await-in-loop
-      await guild?.commands.set(guildCmds.map(c => c.commandData));
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        const guild = await client?.guilds?.fetch(id);
+        // eslint-disable-next-line no-await-in-loop
+        await guild?.commands.set(guildCmds.map(c => c.commandData));
+      // eslint-disable-next-line no-empty
+      } catch {}
     }
 
     if (process.env.NODE_ENV === 'development') {
