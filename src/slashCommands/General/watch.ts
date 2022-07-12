@@ -21,7 +21,7 @@ import { CommandInteraction, MessageEmbed } from 'discord.js';
   }
 })
 export default class WatchSlashCommand extends SlashCommand {
-  @HasPermission(['MANAGE_CHANNELS'])
+  @HasPermission(['MANAGE_CHANNELS', 'MANAGE_THREADS', 'MANAGE_GUILD'])
   async run(interaction: CommandInteraction) {
     const stored = await channels.findById(interaction.channelId);
     const value = interaction.options.getBoolean('enable', false) ?? (stored ? !stored.watch : true);

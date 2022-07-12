@@ -1,4 +1,5 @@
 import threads from '@/lib/database/models/threads';
+import { HasPermission } from '@/lib/decorators/common';
 import SlashCommand, { SlashCommandOptions } from '@/lib/structures/SlashCommandPiece';
 import ThreadState from '@/types/ThreadState';
 import getThreadStateIcon from '@/utils/getThreadStateIcon';
@@ -9,26 +10,27 @@ import { CommandInteraction, MessageEmbed, ThreadChannel } from 'discord.js';
 @ApplyOptions<SlashCommandOptions>({
   guildOnly: true,
   commandData: {
-    name: 'resolve',
-    description: 'Set the ticket as resolved'
+    name: 'wontfix',
+    description: 'Set the ticket as wont fix'
   }
 })
-export default class ResolveSlashCommand extends SlashCommand {
+export default class WontFixSlashCommand extends SlashCommand {
+  @HasPermission(['MANAGE_CHANNELS', 'MANAGE_THREADS', 'MANAGE_GUILD'])
   async run(interaction: CommandInteraction) {
     if (!await threads.exists({ _id: interaction.channelId })) return;
 
     await threads.findByIdAndUpdate(interaction.channelId, {
-      state: ThreadState.Resolved
+      state: ThreadState.WontFix
     });
 
-    await (interaction.channel as ThreadChannel).setName(`${getThreadStateIcon(ThreadState.Resolved)} ${(interaction.channel as ThreadChannel).name.slice(2)}`);
+    await (interaction.channel as ThreadChannel).setName(`${getThreadStateIcon(ThreadState.WontFix)} ${(interaction.channel as ThreadChannel).name.slice(2)}`);
 
     replyInteraction(interaction, {
       embeds: [
         new MessageEmbed()
-          .setTitle('Resolved')
-          .setColor('#43d81a')
-          .setDescription('Thank you everyone!')
+          .setTitle('Wont Fix')
+          .setColor('#eabc31')
+          .setDescription('Ticket closed. Thank you everyone!')
           .setTimestamp()
       ]
     });

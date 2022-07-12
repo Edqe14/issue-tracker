@@ -19,6 +19,7 @@ export default class MessageCreateListener extends Listener {
   }
 
   async run(message: Message) {
+    if (message.author.id === this.container.client.user?.id) return;
     if (await channels.count({ guild: message.guildId, _id: message.channelId }) === 0) return;
 
     const stored = await channels.findById(message.channel.id);

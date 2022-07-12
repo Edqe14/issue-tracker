@@ -14,5 +14,5 @@ type ResType = (
 export const OwnerOnly = (): ResType => Inhibit((cmd) => Config.owners.includes(cmd.user.id));
 
 export const HasPermission = (permissions: PermissionResolvable): ResType => Inhibit(
-  (cmd) => (cmd.member as GuildMember)?.permissions.has(permissions)
+  (cmd) => (cmd.member as GuildMember)?.permissions.has(permissions, true)
 );

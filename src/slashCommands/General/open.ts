@@ -9,26 +9,26 @@ import { CommandInteraction, MessageEmbed, ThreadChannel } from 'discord.js';
 @ApplyOptions<SlashCommandOptions>({
   guildOnly: true,
   commandData: {
-    name: 'resolve',
-    description: 'Set the ticket as resolved'
+    name: 'open',
+    description: 'Set the ticket as opened'
   }
 })
-export default class ResolveSlashCommand extends SlashCommand {
+export default class OpenSlashCommand extends SlashCommand {
   async run(interaction: CommandInteraction) {
     if (!await threads.exists({ _id: interaction.channelId })) return;
 
     await threads.findByIdAndUpdate(interaction.channelId, {
-      state: ThreadState.Resolved
+      state: ThreadState.Open
     });
 
-    await (interaction.channel as ThreadChannel).setName(`${getThreadStateIcon(ThreadState.Resolved)} ${(interaction.channel as ThreadChannel).name.slice(2)}`);
+    await (interaction.channel as ThreadChannel).setName(`${getThreadStateIcon(ThreadState.Open)} ${(interaction.channel as ThreadChannel).name.slice(2)}`);
 
     replyInteraction(interaction, {
       embeds: [
         new MessageEmbed()
-          .setTitle('Resolved')
-          .setColor('#43d81a')
-          .setDescription('Thank you everyone!')
+          .setTitle('Opened')
+          .setColor('#eabc31')
+          .setDescription('Ticket opened, good luck!')
           .setTimestamp()
       ]
     });
