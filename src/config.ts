@@ -7,11 +7,19 @@ Dotenv.config({
   path: join(__dirname, '..', '.env')
 });
 
+export interface GithubConfiguration {
+  owner: string;
+  repo: string;
+  clientId: string;
+  clientSecret: string;
+}
+
 export interface Config extends ClientOptions {
   owners: string[];
   debug?: boolean;
   autoEphemeral?: boolean;
   autoDefer?: boolean;
+  github: GithubConfiguration;
 }
 
 export const PREFIX = 'sp!';
@@ -36,7 +44,13 @@ export const CLIENT_CONFIG: Config = {
       type: 'LISTENING'
     }]
   },
-  debug: process.env.NODE_ENV !== 'production'
+  debug: process.env.NODE_ENV !== 'production',
+  github: {
+    owner: 'Edqe14',
+    repo: 'issue-tracker',
+    clientId: process.env.GH_CLIENT_ID as string,
+    clientSecret: process.env.GH_CLIENT_SECRET as string
+  }
 };
 export const TOKEN = process.env.TOKEN;
 

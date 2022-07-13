@@ -86,6 +86,7 @@ export default class MessageCreateListener extends Listener {
       channel: message.channelId,
       guild: message.guildId,
       state: ThreadState.Open,
+      user: message.author.id,
       type
     }, { upsert: true });
   }
