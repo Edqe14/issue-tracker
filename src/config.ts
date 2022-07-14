@@ -10,8 +10,6 @@ Dotenv.config({
 export interface GithubConfiguration {
   owner: string;
   repo: string;
-  clientId: string;
-  clientSecret: string;
 }
 
 export interface Config extends ClientOptions {
@@ -47,9 +45,7 @@ export const CLIENT_CONFIG: Config = {
   debug: process.env.NODE_ENV !== 'production',
   github: {
     owner: 'Edqe14',
-    repo: 'issue-tracker',
-    clientId: process.env.GH_CLIENT_ID as string,
-    clientSecret: process.env.GH_CLIENT_SECRET as string
+    repo: 'issue-tracker'
   }
 };
 export const TOKEN = process.env.TOKEN;

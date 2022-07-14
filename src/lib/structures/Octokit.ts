@@ -1,9 +1,7 @@
-import CLIENT_CONFIG from '@/config';
-import { App } from 'octokit';
+import { Octokit } from 'octokit';
 
-const app = new App({
-  appId: CLIENT_CONFIG.github.clientId,
-  privateKey: CLIENT_CONFIG.github.clientSecret
+const octokit = new Octokit({
+  auth: process.env.GH_PERSONAL_TOKEN
 });
 
-export default app;
+export default octokit;
