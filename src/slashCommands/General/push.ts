@@ -24,12 +24,29 @@ export default class PushSlashCommand extends SlashCommand {
 
     const thread = nonNullable(await threads.findById(interaction.channelId));
     const user = await this.container.client.users.fetch(thread?.user);
+    const channel = interaction.channel as ThreadChannel;
+    const starterMessage = await channel.fetchStarterMessage();
+    const afterMessages = await channel.messages.fetch({
+      after: starterMessage.id,
+      limit: 15
+    });
+
+    const first = [starterMessage];
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const msg of afterMessages.reverse().values()) {
+      // eslint-disable-next-line no-continue
+      if (msg.author.id === this.container.client.user?.id) continue;
+      if (msg.author.id !== starterMessage.author.id) break;
+
+      first.push(msg);
+    }
 
     const issue = await octokit.rest.issues.create({
       owner: CLIENT_CONFIG.github.owner,
       repo: CLIENT_CONFIG.github.repo,
-      title: (interaction.channel as ThreadChannel).name.slice(2),
-      body: `Issue opened by **\`${user.tag}\`**\n[Thread](https://discord.com/channels/${interaction.guildId}/${interaction.channelId})`,
+      title: channel.name.slice(2),
+      body: `Issue opened by **\`${user.tag}\`**\n[Thread](https://discord.com/channels/${interaction.guildId}/${interaction.channelId})\n\n> ${first.map((m) => m.cleanContent).join('\n> ')}`,
       labels: [getThreadTypeString(thread.type).toLowerCase()]
     });
 
