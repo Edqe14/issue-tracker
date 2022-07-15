@@ -27,8 +27,7 @@ export default class PushSlashCommand extends SlashCommand {
     const channel = interaction.channel as ThreadChannel;
     const starterMessage = await channel.fetchStarterMessage();
     const afterMessages = await channel.messages.fetch({
-      after: starterMessage.id,
-      limit: 15
+      after: starterMessage.id
     });
 
     const first = [starterMessage];
@@ -46,7 +45,7 @@ export default class PushSlashCommand extends SlashCommand {
       owner: CLIENT_CONFIG.github.owner,
       repo: CLIENT_CONFIG.github.repo,
       title: channel.name.slice(2),
-      body: `Issue opened by **\`${user.tag}\`**\n[Thread](https://discord.com/channels/${interaction.guildId}/${interaction.channelId})\n\n> ${first.map((m) => m.cleanContent).join('\n> ')}`,
+      body: `⚠ Issue reported by **\`${user.tag} (${user.id})\`**\n[[Thread]](https://discord.com/channels/${interaction.guildId}/${interaction.channelId})\n\n> ${first.map((m) => `${m.cleanContent} ${m.attachments.size ? '📎 ' : ''}${m.attachments.map((v) => `[[${v.name}]](${v.url})`).join(' ')}`.trim()).join('\n> ')}\n\n<sup>*Opened by **\`${interaction.user.tag} (${interaction.user.id})\`** at **${interaction.createdAt.toLocaleString('en-US', { timeZone: 'UTC', timeZoneName: 'short' })}***</sup>`,
       labels: [getThreadTypeString(thread.type).toLowerCase()]
     });
 
