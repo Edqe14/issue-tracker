@@ -23,6 +23,10 @@ const schema = new Schema({
     type: Number,
     default: 0,
     required: true
+  },
+  issueNumber: {
+    type: Number,
+    default: null
   }
 });
 

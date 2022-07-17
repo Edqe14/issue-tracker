@@ -19,10 +19,24 @@ import { CommandInteraction, MessageEmbed, ThreadChannel } from 'discord.js';
 export default class PushSlashCommand extends SlashCommand {
   @HasPermission(['MANAGE_CHANNELS', 'MANAGE_THREADS', 'MANAGE_GUILD'])
   async run(interaction: CommandInteraction) {
-    // eslint-disable-next-line no-useless-return
-    if (!await threads.exists({ _id: interaction.channelId })) return;
+    await interaction.deferReply();
+
+    if (!await threads.exists({ _id: interaction.channelId })) return null;
 
     const thread = nonNullable(await threads.findById(interaction.channelId));
+
+    if (typeof thread.issueNumber === 'number') {
+      return replyInteraction(interaction, {
+        embeds: [
+          new MessageEmbed()
+            .setTitle('Already pushed to Github')
+            .setColor('#ff2d2d')
+            .setDescription(`[#${thread.issueNumber}](https://github.com/${CLIENT_CONFIG.github.owner}/${CLIENT_CONFIG.github.repo}/issues/${thread.issueNumber})`)
+            .setTimestamp()
+        ]
+      });
+    }
+
     const user = await this.container.client.users.fetch(thread?.user);
     const channel = interaction.channel as ThreadChannel;
     const starterMessage = await channel.fetchStarterMessage();
@@ -49,7 +63,10 @@ export default class PushSlashCommand extends SlashCommand {
       labels: [getThreadTypeString(thread.type).toLowerCase()]
     });
 
-    replyInteraction(interaction, {
+    thread.issueNumber = issue.data.number;
+    await thread.save();
+
+    return replyInteraction(interaction, {
       embeds: [
         new MessageEmbed()
           .setTitle('Pushed to Github')
